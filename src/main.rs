@@ -12,8 +12,8 @@ fn ephemeral(content: &'static str) -> poise::CreateReply {
 
 async fn parse_duration(ctx: &Context<'_>, duration: &str) -> Result<Option<serenity::Timestamp>> {
     let now = std::time::SystemTime::now();
-    let expire_time = if duration.ends_with('m') {
-        let minutes: u64 = duration[..1].parse()?;
+    let expire_time = if let Some(duration) = duration.strip_suffix('m') {
+        let minutes: u64 = duration.parse()?;
         if minutes > 60 {
             ctx.send(ephemeral("1h max for timeouts rn")).await?;
             return Ok(None);
